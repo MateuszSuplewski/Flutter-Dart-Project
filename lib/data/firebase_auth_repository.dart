@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../domain/auth_repository.dart';
 import '../domain/auth_failures.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
   final FirebaseAuth _firebaseAuth;
+  final FirebaseFirestore _firestore;
 
-  FirebaseAuthRepository({FirebaseAuth? firebaseAuth})
-      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+  FirebaseAuthRepository({FirebaseAuth? firebaseAuth, FirebaseFirestore? firestore})
+      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+        _firestore = firestore ?? FirebaseFirestore.instance;
 
   @override
   Future<User> signIn({required String email, required String password}) async {
@@ -17,6 +20,7 @@ class FirebaseAuthRepository implements AuthRepository {
       if (user == null) {
         throw UnknownFailure("Błąd logowania");
       }
+
       return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
@@ -60,6 +64,10 @@ Future<User> register({required String email, required String password}) async {
     if (user == null) {
       throw UnknownFailure("Błąd rejestracji");
     }
+    await _firestore.collection('users').doc(user.uid).set({
+      'role': 'viewer',
+      'email': email
+    });
     return user;
   } on FirebaseAuthException catch (e) {
     if (e.code == 'email-already-in-use') {

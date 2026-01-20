@@ -9,13 +9,17 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().currentUser;
+    // print("${user?.uid}");
+    // print("${user?.email}");
+
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Witaj ${user?.email ?? ""}!'),
+            // Text('Witaj ${user?.email ?? ""}!'),
+            Text("Witaj ${user?.email ?? ""} ${user?.uid ?? "" }"),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
