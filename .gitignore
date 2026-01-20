@@ -48,3 +48,5 @@ app.*.map.json
 *.env
 lib/core/secrets.dart
 keys.dart
+/ios/Runner/GoogleService-Info.plist
+/android/app/google-services.json

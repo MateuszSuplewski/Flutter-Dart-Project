@@ -83,4 +83,5 @@ class DefaultFirebaseOptions {
     authDomain: 'flutter-dart-project-mobile.firebaseapp.com',
     storageBucket: 'flutter-dart-project-mobile.firebasestorage.app',
   );
+
 }
