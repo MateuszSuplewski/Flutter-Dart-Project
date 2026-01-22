@@ -108,6 +108,21 @@ class _UploadImagesScreenState extends State<UploadImagesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (!(Platform.isMacOS || Platform.isWindows || Platform.isLinux)) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Błąd')),
+        body: const Center(
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Widok nie jest dostępny na tej platformie.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Prześlij Obraz (Desktop)')),
       body: Padding(
