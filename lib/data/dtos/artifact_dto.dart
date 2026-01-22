@@ -9,6 +9,7 @@ class ArtifactDto {
   final String fileUrl;
   final String? checksum;
   final int? sizeBytes;
+  final String? storagePath;
 
   ArtifactDto({
     required this.id,
@@ -18,6 +19,7 @@ class ArtifactDto {
     required this.fileUrl,
     this.checksum,
     this.sizeBytes,
+    this.storagePath,
   });
 
   Map<String, dynamic> toJson() {
@@ -28,19 +30,23 @@ class ArtifactDto {
       'fileUrl': fileUrl,
       if (checksum != null) 'checksum': checksum,
       if (sizeBytes != null) 'sizeBytes': sizeBytes,
+      if (storagePath != null) 'storagePath': storagePath,
     };
   }
 
   factory ArtifactDto.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    final metadata = data['metadata'] as Map<String, dynamic>?;
+
     return ArtifactDto(
       id: doc.id,
       title: data['title'] ?? '',
       platform: data['platform'] ?? '',
       releaseDate: (data['releaseDate'] as Timestamp).toDate(),
       fileUrl: data['fileUrl'] ?? '',
-      checksum: data['checksum'],
-      sizeBytes: data['sizeBytes'],
+      checksum: metadata?['checksum'] ?? '',
+      sizeBytes: metadata?['sizeBytes'] ?? '',
+      storagePath: data['storagePath'] ?? '',
     );
   }
 

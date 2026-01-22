@@ -47,6 +47,7 @@ class FirebaseArtifactRepository implements ArtifactRepository {
       'platform': platform,
       'releaseDate': Timestamp.fromDate(releaseDate),
       'fileUrl': downloadUrl,
+      'storagePath': 'raw_images/$fileName',
     });
   }
 }
