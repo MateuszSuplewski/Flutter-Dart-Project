@@ -29,6 +29,7 @@ class _ArtifactDetailsScreenState extends State<ArtifactDetailsScreen> {
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
           final isAnonymous = authProvider.currentUser?.isAnonymous ?? true;
+          final isAdmin = authProvider.isAdmin;
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -66,7 +67,7 @@ class _ArtifactDetailsScreenState extends State<ArtifactDetailsScreen> {
                               final value = _currentArtifact.metadata[key]!;
                               return ListTile(
                                 title: Text('$key: $value'),
-                                trailing: Row(
+                                trailing: isAdmin ? Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
@@ -82,7 +83,7 @@ class _ArtifactDetailsScreenState extends State<ArtifactDetailsScreen> {
                                       onPressed: () => _deleteMetadata(key),
                                     ),
                                   ],
-                                ),
+                                ) : null,
                               );
                             },
                           ),
@@ -95,8 +96,8 @@ class _ArtifactDetailsScreenState extends State<ArtifactDetailsScreen> {
       ),
       floatingActionButton: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
-          final isAnonymous = authProvider.currentUser?.isAnonymous ?? true;
-          if (isAnonymous) return const SizedBox.shrink();
+          final isAdmin = authProvider.isAdmin;
+          if (!isAdmin) return const SizedBox.shrink();
 
           return FloatingActionButton(
             onPressed: () => _showAddEditDialog(context, null, null),

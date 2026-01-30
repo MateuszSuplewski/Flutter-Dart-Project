@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_project_app/core/auth_provider.dart';
+import 'package:provider/provider.dart';
 import 'upload_images_screen.dart';
 import 'artifact_list_screen.dart';
 
@@ -10,6 +12,7 @@ class ImagesMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDesktop =
         Platform.isMacOS || Platform.isWindows || Platform.isLinux;
+    final isAdmin = context.watch<AuthProvider>().isAdmin;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Menu obrazów')),
@@ -17,7 +20,7 @@ class ImagesMenu extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (isDesktop)
+            if (isDesktop && isAdmin)
               ElevatedButton.icon(
                 icon: const Icon(Icons.upload_file),
                 label: const Text('Prześlij nowy obraz'),

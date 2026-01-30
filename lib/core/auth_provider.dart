@@ -8,10 +8,18 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider({required this.authRepository}) {
     _currentUser = authRepository.getCurrentUser();
+    if (_currentUser != null) {
+      _fetchUserRole(_currentUser!.uid);
+    }
   }
 
   User? _currentUser;
   User? get currentUser => _currentUser;
+
+  String? _userRole;
+  String? get userRole => _userRole;
+
+  bool get isAdmin => _userRole == 'admin';
 
   bool _loading = false;
   bool get loading => _loading;
@@ -19,8 +27,12 @@ class AuthProvider extends ChangeNotifier {
   Future<void> loginEmail(String email, String password) async {
     _setLoading(true);
     try {
-      final user = await authRepository.signIn(email: email, password: password);
+      final user = await authRepository.signIn(
+        email: email,
+        password: password,
+      );
       _currentUser = user;
+      await _fetchUserRole(user.uid);
     } on Failure {
       rethrow;
     } finally {
@@ -34,6 +46,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       final user = await authRepository.signInAnonymously();
       _currentUser = user;
+      _userRole = null;
     } on Failure {
       rethrow;
     } finally {
@@ -45,8 +58,12 @@ class AuthProvider extends ChangeNotifier {
   Future<void> registerEmail(String email, String password) async {
     _setLoading(true);
     try {
-      final user = await authRepository.register(email: email, password: password);
+      final user = await authRepository.register(
+        email: email,
+        password: password,
+      );
       _currentUser = user;
+      await _fetchUserRole(user.uid);
     } on Failure {
       rethrow;
     } finally {
@@ -58,6 +75,12 @@ class AuthProvider extends ChangeNotifier {
   Future<void> signOut() async {
     await authRepository.signOut();
     _currentUser = null;
+    _userRole = null;
+    notifyListeners();
+  }
+
+  Future<void> _fetchUserRole(String uid) async {
+    _userRole = await authRepository.getUserRole(uid);
     notifyListeners();
   }
 

@@ -74,7 +74,7 @@ class _UploadImagesScreenState extends State<UploadImagesScreen> {
     if (_fileNotifier.value == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Please select a file')));
+      ).showSnackBar(const SnackBar(content: Text('Wybierz plik!')));
       return;
     }
 

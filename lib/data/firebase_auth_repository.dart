@@ -100,8 +100,19 @@ class FirebaseAuthRepository implements AuthRepository {
     await _firebaseAuth.signOut();
   }
 
-  @override
   User? getCurrentUser() {
     return _firebaseAuth.currentUser;
+  }
+
+  Future<String?> getUserRole(String uid) async {
+    try {
+      final doc = await _firestore.collection('users').doc(uid).get();
+      if (doc.exists) {
+        return doc.data()?['role'] as String?;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
   }
 }
