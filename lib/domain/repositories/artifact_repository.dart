@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../entities/artifact.dart';
 
 abstract class ArtifactRepository {
   Future<void> uploadArtifact({
@@ -8,4 +9,6 @@ abstract class ArtifactRepository {
     required File file,
     Function(double)? onProgress,
   });
+
+  Future<List<Artifact>> getArtifacts();
 }

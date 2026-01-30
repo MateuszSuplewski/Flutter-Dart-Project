@@ -4,6 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as p;
 import '../../domain/repositories/artifact_repository.dart';
+import '../../domain/entities/artifact.dart';
+import '../dtos/artifact_dto.dart';
 
 class FirebaseArtifactRepository implements ArtifactRepository {
   final FirebaseFirestore _firestore;
@@ -49,5 +51,13 @@ class FirebaseArtifactRepository implements ArtifactRepository {
       'fileUrl': downloadUrl,
       'storagePath': 'raw_images/$fileName',
     });
+  }
+
+  @override
+  Future<List<Artifact>> getArtifacts() async {
+    final snapshot = await _firestore.collection('artifacts').get();
+    return snapshot.docs
+        .map((doc) => ArtifactDto.fromFirestore(doc).toDomain())
+        .toList();
   }
 }

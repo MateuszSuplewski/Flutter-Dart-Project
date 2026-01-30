@@ -45,7 +45,9 @@ class ArtifactDto {
       releaseDate: (data['releaseDate'] as Timestamp).toDate(),
       fileUrl: data['fileUrl'] ?? '',
       checksum: metadata?['checksum'] ?? '',
-      sizeBytes: metadata?['sizeBytes'] ?? '',
+      sizeBytes: (metadata?['sizeBytes'] is int)
+          ? metadata!['sizeBytes']
+          : int.tryParse(metadata?['sizeBytes']?.toString() ?? ''),
       storagePath: data['storagePath'] ?? '',
     );
   }

@@ -6,8 +6,8 @@ import 'data/firebase_auth_repository.dart';
 import 'core/auth_provider.dart';
 import 'presentation/home_screen.dart';
 import 'presentation/auth/login_screen.dart';
-// import 'test/firebase_auth_test.dart'; // to be deleted
-// import 'test/firebase_test.dart'; //to be deleted
+import 'domain/repositories/artifact_repository.dart';
+import 'data/repositories/firebase_artifact_repository.dart';
 
 //terminal -> flutter run
 void main() async {
@@ -23,8 +23,13 @@ void main() async {
   // await authTest();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => AuthProvider(authRepository: authRepository),
+    MultiProvider(
+      providers: [
+        Provider<ArtifactRepository>(create: (_) => FirebaseArtifactRepository()),
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(authRepository: authRepository),
+        ),
+      ],
       child: const MyApp(), 
     )
   );

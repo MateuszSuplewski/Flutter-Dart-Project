@@ -2,8 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
+import 'package:provider/provider.dart';
 import '../../domain/usecases/upload_artifact_usecase.dart';
-import '../../data/repositories/firebase_artifact_repository.dart';
+import '../../domain/repositories/artifact_repository.dart';
 
 class UploadImagesScreen extends StatefulWidget {
   const UploadImagesScreen({super.key});
@@ -31,12 +32,18 @@ class _UploadImagesScreenState extends State<UploadImagesScreen> {
     'Sega Genesis',
   ];
 
-  late final UploadArtifactUseCase _uploadUseCase;
+  late UploadArtifactUseCase _uploadUseCase;
 
   @override
   void initState() {
     super.initState();
-    _uploadUseCase = UploadArtifactUseCase(FirebaseArtifactRepository());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final repository = Provider.of<ArtifactRepository>(context);
+    _uploadUseCase = UploadArtifactUseCase(repository);
   }
 
   @override

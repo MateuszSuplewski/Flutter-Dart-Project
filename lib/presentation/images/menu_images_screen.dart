@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'upload_images_screen.dart';
+import 'artifact_list_screen.dart';
 
 class ImagesMenu extends StatelessWidget {
   const ImagesMenu({super.key});
@@ -30,7 +31,18 @@ class ImagesMenu extends StatelessWidget {
                 },
               ),
             const SizedBox(height: 20),
-            const Text('Placeholder...'),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.list),
+              label: const Text('Lista Artefaktów'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ArtifactListScreen(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
