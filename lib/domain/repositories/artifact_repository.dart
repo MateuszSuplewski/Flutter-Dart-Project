@@ -11,4 +11,6 @@ abstract class ArtifactRepository {
   });
 
   Future<List<Artifact>> getArtifacts();
+
+  Future<void> updateMetadata(String artifactId, Map<String, String> metadata);
 }

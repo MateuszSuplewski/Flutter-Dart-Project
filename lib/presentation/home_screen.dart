@@ -9,8 +9,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().currentUser;
-    // print("${user?.uid}");
-    // print("${user?.email}");
 
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
@@ -18,8 +16,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Text('Witaj ${user?.email ?? ""}!'),
-            Text("Witaj ${user?.email ?? ""} ${user?.uid ?? "" }"),
+            Text("Witaj ${user?.email ?? ""} ${user?.uid ?? ""}"),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -31,11 +28,12 @@ class HomeScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (_) => ImagesMenu()));
+                  context,
+                  MaterialPageRoute(builder: (_) => ImagesMenu()),
+                );
               },
               child: const Text('Repozytorium'),
-            )
+            ),
           ],
         ),
       ),

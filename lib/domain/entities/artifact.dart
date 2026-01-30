@@ -4,8 +4,7 @@ class Artifact {
   final String platform;
   final DateTime releaseDate;
   final String fileUrl;
-  final String? checksum;
-  final int? sizeBytes;
+  final Map<String, String> metadata;
 
   Artifact({
     required this.id,
@@ -13,7 +12,13 @@ class Artifact {
     required this.platform,
     required this.releaseDate,
     required this.fileUrl,
-    this.checksum,
-    this.sizeBytes,
+    required this.metadata,
   });
+
+  String? get checksum => metadata['checksum'];
+  int? get sizeBytes {
+    final val = metadata['sizeBytes'];
+    if (val == null) return null;
+    return int.tryParse(val);
+  }
 }

@@ -50,6 +50,7 @@ class FirebaseArtifactRepository implements ArtifactRepository {
       'releaseDate': Timestamp.fromDate(releaseDate),
       'fileUrl': downloadUrl,
       'storagePath': 'raw_images/$fileName',
+      'metadata': {},
     });
   }
 
@@ -59,5 +60,12 @@ class FirebaseArtifactRepository implements ArtifactRepository {
     return snapshot.docs
         .map((doc) => ArtifactDto.fromFirestore(doc).toDomain())
         .toList();
+  }
+
+  @override
+  Future<void> updateMetadata(String artifactId, Map<String, String> metadata) async {
+    await _firestore.collection('artifacts').doc(artifactId).update({
+      'metadata': metadata,
+    });
   }
 }

@@ -7,8 +7,7 @@ class ArtifactDto {
   final String platform;
   final DateTime releaseDate;
   final String fileUrl;
-  final String? checksum;
-  final int? sizeBytes;
+  final Map<String, String> metadata;
   final String? storagePath;
 
   ArtifactDto({
@@ -17,8 +16,7 @@ class ArtifactDto {
     required this.platform,
     required this.releaseDate,
     required this.fileUrl,
-    this.checksum,
-    this.sizeBytes,
+    required this.metadata,
     this.storagePath,
   });
 
@@ -28,15 +26,24 @@ class ArtifactDto {
       'platform': platform,
       'releaseDate': Timestamp.fromDate(releaseDate),
       'fileUrl': fileUrl,
-      if (checksum != null) 'checksum': checksum,
-      if (sizeBytes != null) 'sizeBytes': sizeBytes,
+      'metadata': metadata,
       if (storagePath != null) 'storagePath': storagePath,
     };
   }
 
   factory ArtifactDto.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    final metadata = data['metadata'] as Map<String, dynamic>?;
+
+    final rawMetadata = data['metadata'];
+    final Map<String, String> metadataMap = {};
+
+    if (rawMetadata is Map) {
+      rawMetadata.forEach((key, value) {
+        if (value != null) {
+          metadataMap[key.toString()] = value.toString();
+        }
+      });
+    }
 
     return ArtifactDto(
       id: doc.id,
@@ -44,10 +51,7 @@ class ArtifactDto {
       platform: data['platform'] ?? '',
       releaseDate: (data['releaseDate'] as Timestamp).toDate(),
       fileUrl: data['fileUrl'] ?? '',
-      checksum: metadata?['checksum'] ?? '',
-      sizeBytes: (metadata?['sizeBytes'] is int)
-          ? metadata!['sizeBytes']
-          : int.tryParse(metadata?['sizeBytes']?.toString() ?? ''),
+      metadata: metadataMap,
       storagePath: data['storagePath'] ?? '',
     );
   }
@@ -59,8 +63,7 @@ class ArtifactDto {
       platform: platform,
       releaseDate: releaseDate,
       fileUrl: fileUrl,
-      checksum: checksum,
-      sizeBytes: sizeBytes,
+      metadata: metadata,
     );
   }
 }
