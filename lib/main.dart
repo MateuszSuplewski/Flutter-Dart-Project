@@ -12,7 +12,7 @@ import 'data/repositories/firebase_artifact_repository.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 void main() async {
@@ -20,7 +20,8 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await FirebaseMessaging.instance.subscribeToTopic('all');
+  
+  // await FirebaseMessaging.instance.subscribeToTopic('all');
 
   final authRepository = FirebaseAuthRepository();
 
@@ -34,13 +35,15 @@ void main() async {
           create: (_) => AuthProvider(authRepository: authRepository),
         ),
       ],
-      child: const MyApp(),
+      child: MyApp(state: ApplicationState()),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.state});
+
+  final ApplicationState state;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +54,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Consumer<AuthProvider>(
         builder: (context, authProvider, _) {
+          state.subscribeToTopic('all');
           if (authProvider.currentUser != null) {
             return const HomeScreen();
           } else {
@@ -69,7 +73,7 @@ class ApplicationState extends ChangeNotifier {
 
   late FirebaseMessaging firebaseMessaging;
 
-  String _fcmToken = '';
+  String _fcmToken = ''; // Needed for web push notifications
 
   String get fcmToken => _fcmToken;
 
@@ -88,10 +92,6 @@ Future<void> init() async {
       _fcmToken = token;
       debugPrint(token);
       notifyListeners();
-      // If necessary send token to application server.
-
-      // Note: This callback is fired at each app startup and whenever a new
-      // token is generated.
     });
 
 const vapidKey = '';
@@ -116,8 +116,6 @@ firebaseMessaging.getNotificationSettings().then((settings) {
 
       if (remoteMessage.notification != null) {
         debugPrint('message is a notification');
-        // On Android, foreground notifications are not shown, only when the app
-        // is backgrounded.
       }
     });
   }
@@ -125,11 +123,11 @@ firebaseMessaging.getNotificationSettings().then((settings) {
 Future<void> requestMessagingPermission() async {
     NotificationSettings settings = await firebaseMessaging.requestPermission(
       alert: true,
-      announcement: false,
+      announcement: true,
       badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
+      carPlay: true,
+      criticalAlert: true,
+      provisional: true,
       sound: true,
     );
 

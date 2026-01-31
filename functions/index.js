@@ -56,5 +56,5 @@ exports.onTitleUpdate = functions.firestore.document("artifacts/{title}").onUpda
     messages.push({notification: { title: 'Title Updated!', body: `${change.before.data().title} => ${change.after.data().title}` },
   topic: "all",
 });
-    await getMessaging().sendEach(messages);
+    await admin.messaging().send(messages);
 });
