@@ -49,3 +49,12 @@ exports.analyzeArtifact = functions
 
     console.error(`Nie znaleziono dokumentu dla ${filePath} po ${MAX_RETRIES} próbach.`)
   })
+
+
+exports.onTitleUpdate = functions.firestore.document("artifacts/{title}").onUpdate(async (change) => {
+    const messages = [];
+    messages.push({notification: { title: 'Title Updated!', body: `${change.before.data().title} => ${change.after.data().title}` },
+  topic: "all",
+});
+    await getMessaging().sendEach(messages);
+});
